@@ -1,40 +1,26 @@
 <%inherit file="/base.mako"/>
 
 <div class="block">
-  <h2>Settling Transfers</h2>
-
-  % if len(c.settle) == 0:
-    <p>No need! The books are balanced!</p>
-  % else:
-    <p>To balance the books, the following transfers need to be made:</p>
-
-    <table id="balance">
+  <h2>Current balances</h2>
+  <table id="balance">
       <tr>
-        <th>From</th>
-        <th>To</th>
-        <th>Amount</th>
+        <th>User</th>
+        <th>Balance</th>
       </tr>
-      % for transfer in c.settle:
-        <tr>
-          <td>${transfer[0].name}</td>
-          <td>${transfer[1].name}</td>
-          <td class="amount">${transfer[2]}</td>
-        </tr>
+      % for user in sorted(c.users, key=lambda x: c.debts[x[1]]):
+      <tr>
+      <%
+      color = 'white'
+      if c.debts[user[1]] < 0:
+        color = '#0f0'
+      elif c.debts[user[1]] > 0:
+        color = 'red'
+      %>
+       <td>${user[1].name}</td>
+       <td class="amount" style="background-color: ${color}">${-c.debts[user[1]]}</td>
+      </tr>
       % endfor
-      % if c.net != 0:
-        <tr>
-          <th colspan="2">
-            % if c.net > 0:
-              The group owes you:
-            % elif c.net < 0:
-              You owe the group:
-            % endif
-          </th>
-          <th class="amount">${abs(c.net)}</th>
-        </tr>
-      % endif
-    </table>
-  % endif
+  </table>
 </div>
 
 <div class="block">

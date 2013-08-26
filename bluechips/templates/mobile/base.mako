@@ -61,6 +61,32 @@
 </%def>
 
 <%def name="spendForm()">
+ % for key in c.shares:
+           ${key}: ${c.share_dict[key]},
+ % endfor
+<script>
+<%
+        share_dict = {}
+        for k in c.model.shares:
+            share_dict[k] = [c.model.share_dict[k].get(u[1].username, 0) for u in c.users]
+%>
+ split_dict = {
+ % for key in c.model.shares:
+           ${key}: ${share_dict[key]},
+ % endfor
+          }
+ function set_split() {
+   var split_name = $("#split")[0].value;
+   var split = split_dict[split_name];
+   for (var i = 0; i < split.length; i++){
+     $("#shares-"+i+"amount")[0].value = split[i];
+   }
+   calcSplit();
+ }
+</script>
+
+
+
   <div id="tab-spend" class="tab">
     <%
       if c.id != '':
@@ -91,14 +117,21 @@
 
       <p>Change how an expenditure is split up.</p>
 
+   Set to <select id="split" onChange="set_split()">
+   <option value="House">House</option>
+   <option value="Rent">Rent</option>
+   <select>
+
       <table class="form">
         % for ii, user_row in enumerate(c.users):
           <%
             user_id, user = user_row
-            if user.resident:
-              percent = 1
+            key = 'shares-%d.amount' % ii
+            default_share = c.model.share_dict[c.model.shares[0]].get(user.username, 0)
+            if c.values:
+             percent = c.values[key]
             else:
-              percent = 0
+             percent = default_share
           %>
           <tr>
             <th><label for="shares-${ii}amount">${user.name}</label></th>

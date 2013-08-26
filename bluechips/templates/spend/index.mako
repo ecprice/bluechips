@@ -1,5 +1,26 @@
 <%inherit file="/base.mako"/>
 
+<script>
+<%
+        share_dict = {}
+        for k in c.model.shares:
+            share_dict[k] = [c.model.share_dict[k].get(u[1].username, 0) for u in c.users]
+%>
+ split_dict = {
+ % for key in c.model.shares:
+           ${key}: ${share_dict[key]},
+ % endfor
+          }
+ function set_split() {
+   var split_name = $("#split")[0].value;
+   var split = split_dict[split_name];
+   for (var i = 0; i < split.length; i++){
+     $("#shares-"+i+"amount")[0].value = split[i];
+   }
+   calcSplit();
+ }
+</script>
+
 <form action="${h.url_for(controller='spend', action='update', id=c.expenditure.id)}" method="post">
   ${h.auth_token_hidden_field()}
   <table class="form">
@@ -21,7 +42,15 @@
     </tr>
   </table>
 
-  <p>Change how an expenditure is split up. Enter a percentage, or something like a percentage, for each user. They don't have to add to 100.</p>
+  <p>Change how an expenditure is split up. Choose a preset option: <select id="split" onChange="set_split()">
+ <option value="House">House</option>
+ <option value="Rent">Rent</option>
+<select>
+
+
+
+  <p>Alternatively, enter the share per user.</p>
+
 
   <table class="form">
     % for ii, user_row in enumerate(c.users):

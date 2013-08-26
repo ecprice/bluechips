@@ -2,6 +2,8 @@
 import sqlalchemy as sa
 from sqlalchemy import orm
 
+from sqlalchemy.orm.collections import attribute_mapped_collection
+
 from bluechips.model.user import User
 from bluechips.model.expenditure import Expenditure
 from bluechips.model.split import Split
@@ -22,6 +24,50 @@ def init_model(engine):
     meta.Session = orm.scoped_session(sm)
 
 ### Database Schemas ###
+
+rent_shares = dict((x.split()[0], int(x.split()[1])) for x in """
+jacob  860
+ecprice  840
+david  900
+sara  870
+ben  825
+katja  450
+paul  450
+richard  770
+frank  760
+michal  940
+cathy  830
+""".strip().split('\n'))
+
+occupants = rent_shares.keys() + 'rishig'.split()
+
+shares = ['House', 'Rent']
+share_dict = {u"Rent": rent_shares,
+              u"House": dict((x, 1) for x in occupants),
+              }
+
+
+if False:
+    shares = sa.Table('shares', meta.metadata,
+                      sa.Column('id', sa.types.Integer, primary_key=True),
+                      sa.Column('user_id', sa.types.Integer,
+                                sa.ForeignKey('users.id'), nullable=False),
+                      sa.Column('name', sa.types.Unicode(32), nullable=False),
+                      sa.Column('share', sa.types.Integer, nullable=False),
+                     )
+    class Share(object):
+        def __init__(self, name, share):
+            self.name = name
+            self.share = share
+
+    orm.mapper(Share, shares,
+               properties={
+            'user': orm.relationship(User,
+    #                                collection_class=attribute_mapped_collection('name'),
+    #                                cascade='all, delete-orphan',
+                                    backref=orm.backref('shares', cascade='save-update,delete,delete-orphan'),
+                                    ),
+    })
 
 users = sa.Table('users', meta.metadata,
                  sa.Column('id', sa.types.Integer, primary_key=True),
@@ -79,7 +125,12 @@ transfers = sa.Table('transfers', meta.metadata,
 orm.mapper(User, users,
            properties={
         'expenditures': orm.relation(Expenditure,
-                                     backref='spender')
+                                     backref='spender'),
+#        'shares': orm.relationship(Share,
+#                                collection_class=attribute_mapped_collection('name'),
+#                                cascade='all, delete-orphan',
+#                                backref='users',
+#                                ),
 })
 
 orm.mapper(Expenditure, expenditures,
@@ -112,4 +163,5 @@ orm.mapper(Transfer, transfers,
 
 __all__ = ['users', 'expenditures', 'splits', 'subitems', 'transfers',
            'User', 'Expenditure', 'Split', 'Subitem', 'Transfer',
+           'shares', 'share_dict',
            'meta']

@@ -66,7 +66,7 @@ class SpendController(BaseController):
             c.values = {}
             for ii, user_row in enumerate(c.users):
                 user_id, user = user_row
-                val = model.share_dict[model.shares[0]].get(user.username, 0)
+                val = model.share_dict[model.share_names[0]].get(user.username, 0)
                 c.values['shares-%d.amount' % ii] = val
         else:
             c.title = 'Edit an Expenditure'

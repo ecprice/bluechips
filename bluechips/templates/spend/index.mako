@@ -3,11 +3,11 @@
 <script>
 <%
         share_dict = {}
-        for k in c.model.shares:
+        for k in c.model.share_names:
             share_dict[k] = [c.model.share_dict[k].get(u[1].username, 0) for u in c.users]
 %>
  split_dict = {
- % for key in c.model.shares:
+ % for key in c.model.share_names:
            ${key}: ${share_dict[key]},
  % endfor
           }

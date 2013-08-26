@@ -67,11 +67,11 @@
 <script>
 <%
         share_dict = {}
-        for k in c.model.shares:
+        for k in c.model.share_names:
             share_dict[k] = [c.model.share_dict[k].get(u[1].username, 0) for u in c.users]
 %>
  split_dict = {
- % for key in c.model.shares:
+ % for key in c.model.share_names:
            ${key}: ${share_dict[key]},
  % endfor
           }
@@ -127,7 +127,7 @@
           <%
             user_id, user = user_row
             key = 'shares-%d.amount' % ii
-            default_share = c.model.share_dict[c.model.shares[0]].get(user.username, 0)
+            default_share = c.model.share_dict[c.model.share_names[0]].get(user.username, 0)
             if c.values:
              percent = c.values[key]
             else:

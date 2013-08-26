@@ -91,6 +91,7 @@
       <th class="user">Spender</th>
       <th class="description">Description</th>
       <th class="amount">Amount</th>
+      <th class="type">Category</th>
       <th class="share">My Share</th>
       <th class="editlink"></th>
       <th class="deletelink"></th>
@@ -107,6 +108,7 @@
         <td class="user">${formatUser(e.spender)}</td>
         <td class="description">${e.description}</td>
         <td class="amount">${e.amount}</td>
+        <td class="type">${e.share_name or "other"}</td>
         <td class="share">${e.share(request.environ['user'])}</td>
         <td class="editlink">${h.link_to('Edit', h.url_for(controller='spend', action='edit', id=e.id))}</td>
         <td class="deletelink">${h.link_to('Delete', h.url_for(controller='spend', action='delete', id=e.id))}</td>

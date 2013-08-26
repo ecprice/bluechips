@@ -9,6 +9,7 @@ from bluechips.model.expenditure import Expenditure
 from bluechips.model.split import Split
 from bluechips.model.subitem import Subitem
 from bluechips.model.transfer import Transfer
+from shares import share_names, share_dict
 
 from bluechips.model import meta
 from bluechips.model import types
@@ -24,28 +25,6 @@ def init_model(engine):
     meta.Session = orm.scoped_session(sm)
 
 ### Database Schemas ###
-
-rent_shares = dict((x.split()[0], int(x.split()[1])) for x in """
-jacob  860
-ecprice  840
-david  900
-sara  870
-ben  825
-katja  450
-paul  450
-richard  770
-frank  760
-michal  940
-cathy  830
-""".strip().split('\n'))
-
-occupants = rent_shares.keys() + 'rishig'.split()
-
-shares = ['House', 'Rent']
-share_dict = {u"Rent": rent_shares,
-              u"House": dict((x, 1) for x in occupants),
-              }
-
 
 if False:
     shares = sa.Table('shares', meta.metadata,

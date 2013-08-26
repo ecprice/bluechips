@@ -1,6 +1,6 @@
 from bluechips.model.user import User
 from bluechips.model.split import Split
-from bluechips.model import meta
+from bluechips.model.shares import share_dict
 from bluechips.model.types import Currency
 from decimal import Decimal
 from datetime import datetime
@@ -80,5 +80,16 @@ class Expenditure(object):
         shares = dict((split.user, split.share)
                       for split in self.splits)
         return shares.get(user, Currency(0))
+
+    @property
+    def share_name(self):
+        "Return the share name that matches the splitting"
+        shares = dict((split.user, split.share)
+                      for split in self.splits)
+        for oname, oshares in share_dict.items():
+            ratio = float(self.amount) * 1. / sum(oshares.values())
+            difference = sum(abs(shares[u] - oshares.get(u.username, 0)*ratio) for u in shares)
+            if difference <= Currency(len(shares)):
+                return oname
 
 __all__ = ['Expenditure']

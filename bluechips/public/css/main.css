@@ -1,7 +1,7 @@
 body {
     font-family: "Lucida Grande", helvetica, arial, sans-serif;
     font-size: 0.9em;
-    width: 800px;
+    width: 900px;
 }
 strong {
     font-weight: bold;
@@ -72,6 +72,9 @@ table.list td.date {
     width: 90px;
 }
 table.list td.user {
+    width: 110px;
+}
+table.list td.type {
     width: 110px;
 }
 table.list td.amount {

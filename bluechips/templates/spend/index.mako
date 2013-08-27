@@ -43,8 +43,9 @@
   </table>
 
   <p>Change how an expenditure is split up. Choose a preset option: <select id="split" onChange="set_split()">
- <option value="House">House</option>
- <option value="Rent">Rent</option>
+ % for name in c.model.share_names:
+ <option value="${name}">${name}</option>
+ % endfor
 <select>
 
 

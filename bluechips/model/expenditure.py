@@ -85,7 +85,11 @@ class Expenditure(object):
     def share_name(self):
         "Return the share name that matches the splitting"
         shares = dict((split.user, split.share)
-                      for split in self.splits)
+                      for split in self.splits
+                      if split.share != 0)
+        if len(shares) == 1:
+            user = shares.keys()[0]
+            return 'For %s' % user.name
         for oname, oshares in share_dict.items():
             ratio = float(self.amount) * 1. / sum(oshares.values())
             difference = sum(abs(shares[u] - oshares.get(u.username, 0)*ratio) for u in shares)

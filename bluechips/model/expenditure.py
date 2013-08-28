@@ -2,6 +2,7 @@ from bluechips.model.user import User
 from bluechips.model.split import Split
 from bluechips.model.shares import share_dict
 from bluechips.model.types import Currency
+from bluechips.model import meta
 from decimal import Decimal
 from datetime import datetime
 import random
